@@ -1,5 +1,6 @@
 FROM osrf/ros:humble-desktop
 
+# System Update
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     vim \
@@ -11,6 +12,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# User settings
 ARG USERNAME=taku_ros
 ARG HOST_USER_ID=1000
 ARG HOST_GROUP_ID=$HOST_USER_ID
@@ -25,5 +27,8 @@ RUN mkdir -p ros2_ws/src && \
     chown $HOST_USER_ID:$HOST_USER_ID ros2_ws
 
 USER $USERNAME
+
+# Environment Setup
+RUN source /opt/ros2/humble/setup.bash
 
 CMD ["/bin/bash"]
