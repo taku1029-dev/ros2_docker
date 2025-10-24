@@ -31,9 +31,6 @@ RUN apt-get install -y --no-install-recommends \
     zsh-autosuggestions \
     zsh-syntax-highlighting
 
-# Environment Setup
-RUN /bin/zsh -c "source /opt/ros/humble/setup.bash"
-
 USER $USERNAME
 
 CMD ["/bin/zsh"]
