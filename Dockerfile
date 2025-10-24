@@ -28,6 +28,6 @@ RUN mkdir -p ros2_ws/src && \
 USER $USERNAME
 
 # Environment Setup
-RUN . /opt/ros2/humble/setup.bash
+RUN . /opt/ros/humble/setup.bash
 
 CMD ["/bin/bash"]
