@@ -4,13 +4,12 @@ FROM osrf/ros:humble-desktop
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     vim \
+    neovim \
     byobu \
     net-tools \
     libgtk-3-0 \
     mesa-utils \
-    dbus-x11 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    dbus-x11
 
 # User settings
 ARG USERNAME=taku_ros
@@ -29,6 +28,6 @@ RUN mkdir -p ros2_ws/src && \
 USER $USERNAME
 
 # Environment Setup
-RUN source /opt/ros2/humble/setup.bash
+RUN . /opt/ros2/humble/setup.bash
 
 CMD ["/bin/bash"]
