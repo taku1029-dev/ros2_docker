@@ -30,4 +30,4 @@ USER $USERNAME
 # Environment Setup
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash"
 
-CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
