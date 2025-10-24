@@ -25,9 +25,15 @@ WORKDIR /home/$USERNAME
 RUN mkdir -p ros2_ws/src && \
     chown $HOST_USER_ID:$HOST_USER_ID ros2_ws
 
-USER $USERNAME
+# zsh setup
+RUN apt-get install -y --no-install-recommends \
+    zsh \
+    zsh-autosuggestions \
+    zsh-syntax-highlighting
 
 # Environment Setup
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash"
+RUN /bin/zsh -c "source /opt/ros/humble/setup.bash"
+
+USER $USERNAME
 
 CMD ["/bin/zsh"]
