@@ -31,6 +31,10 @@ RUN apt-get install -y --no-install-recommends \
     zsh-autosuggestions \
     zsh-syntax-highlighting
 
+# Nvim settings
+
+# Initialization
+RUN . /opt/ros/humble/setup.sh
 USER $USERNAME
 
 CMD ["/bin/zsh"]
