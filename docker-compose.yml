@@ -1,6 +1,6 @@
 services:
   ros2_env_test:
-    image: ros2_env:first
+    image: ros2_env:test
     container_name: first_ros2_env
     tty: true # -t option (prevent container from stopping)
     stdin_open: true # -i option (accept stdin input)
@@ -11,6 +11,7 @@ services:
     volumes:
       - /dev/shm:/dev/shm
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/taku1029/.config/nvim:/home/taku_ros/nvim
       - type: bind
         source: $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
         target: $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY 
