@@ -2,39 +2,40 @@ FROM osrf/ros:humble-desktop
 
 # System Update
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
+    sudo \
+    wget \
     vim \
-    neovim \
-    byobu \
-    net-tools \
-    libgtk-3-0 \
-    mesa-utils \
-    dbus-x11
+    neovim && \
+    apt-get autoremove -y
 
-# User settings
+# User Settings
 ARG USERNAME=taku_ros
 ARG HOST_USER_ID=1000
 ARG HOST_GROUP_ID=$HOST_USER_ID
 
+## User Creation (UID/GID: 1000)
 RUN groupadd --gid $HOST_GROUP_ID $USERNAME && \
     useradd --uid $HOST_USER_ID --gid $HOST_GROUP_ID -m $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-    chown $HOST_USER_ID:$HOST_GROUP_ID /home/${USERNAME}
+    chmod 0440 /etc/sudoers.d/$USERNAME && \
+    chown $HOST_USER_ID:$HOST_GROUP_ID /home/$USERNAME
 
-WORKDIR /home/$USERNAME
-RUN mkdir -p ros2_ws/src && \
-    chown $HOST_USER_ID:$HOST_USER_ID ros2_ws
-
-# zsh setup
-RUN apt-get install -y --no-install-recommends \
-    zsh \
-    zsh-autosuggestions \
-    zsh-syntax-highlighting
-
+## Oh My Zsh Setup
+USER $USERNAME
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
+    -t eastwood \
+    -p git \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-syntax-highlighting \
+    -a "source /opt/ros/humble/setup.zsh"
 # Nvim settings
 
-# Initialization
-RUN . /opt/ros/humble/setup.sh
-USER $USERNAME
+# Environment Settings
+RUN mkdir -p /home/$USERNAME/ros2_ws/src && \
+    chown $HOST_USER_ID:$HOST_USER_ID ros2_ws
 
-CMD ["/bin/zsh"]
+# Entrypoint settings
+WORKDIR /home/$USERNAME
+ENTRYPOINT [ "/bin/zsh" ]
+CMD ["-l"]
