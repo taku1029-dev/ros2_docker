@@ -5,8 +5,7 @@ RUN apt-get update && \
     apt-get install -y \
     sudo \
     wget \
-    vim \
-    neovim && \
+    software-properties-common && \
     apt-get autoremove -y
 
 # User Settings
@@ -30,10 +29,38 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
     -p https://github.com/zsh-users/zsh-syntax-highlighting \
     -a "source /opt/ros/humble/setup.zsh"
 # Nvim settings
-
+## Vim build
+WORKDIR /tmp
+RUN sudo apt-get install -y \
+    git \
+    make \
+    clang \
+    libtool-bin
+RUN git clone https://github.com/vim/vim.git && \
+    cd vim/src && \
+    make && \
+    sudo make install
+## Build Tools
+RUN sudo apt-get install -y \
+    ninja-build \
+    gettext \
+    cmake \
+    curl
+## Build Process
+### Neovim
+WORKDIR /tmp
+RUN mkdir src && cd src
+RUN git clone https://github.com/neovim/neovim && \
+    cd neovim && \
+    make CMAKE_BUILD_TYPE=RelWithDebInfo && \
+    sudo make install
+## Plugin Dependencies
+RUN sudo apt-get install -y \
+    npm \
+    luarocks
 # Environment Settings
 RUN mkdir -p /home/$USERNAME/ros2_ws/src && \
-    chown $HOST_USER_ID:$HOST_USER_ID ros2_ws
+    chown $HOST_USER_ID:$HOST_USER_ID /home/$USERNAME/ros2_ws
 
 # Entrypoint settings
 WORKDIR /home/$USERNAME
