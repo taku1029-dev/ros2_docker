@@ -1,20 +1,21 @@
 services:
-  ros2_env_test:
-    image: ros2_env:test
-    container_name: first_ros2_env
+  ros2_host:
+    image: ros2_env:first
+    container_name: ros2_env
     tty: true # -t option (prevent container from stopping)
     stdin_open: true # -i option (accept stdin input)
     privileged: true
     # restart: "no" # -rm option (remove container after exit)
     # stop_grace_period: 0s # SIGTERM period till SIGKILL (10s by default)
-    
     volumes:
       - /dev/shm:/dev/shm
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /home/taku1029/.config/nvim:/home/taku_ros/nvim
+      - type: bind
+        source: /home/taku1029/.config # binding .config/nvim makes .config dir root:root
+        target: /home/taku_ros/.config
       - type: bind
         source: $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
-        target: $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY 
+        target: $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
     devices:
       - /dev/dri:/dev/dri
     network_mode: "host"
