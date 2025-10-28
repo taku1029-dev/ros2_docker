@@ -5,6 +5,7 @@ RUN apt-get update && \
     apt-get install -y \
     sudo \
     wget \
+    curl \
     software-properties-common && \
     apt-get autoremove -y
 
@@ -40,13 +41,13 @@ RUN git clone https://github.com/vim/vim.git && \
     cd vim/src && \
     make && \
     sudo make install
-## Build Tools
+## Nvim Build Tools
 RUN sudo apt-get install -y \
     ninja-build \
     gettext \
     cmake \
     curl
-## Build Process
+## Nvim Build Process
 ### Neovim
 WORKDIR /tmp
 RUN mkdir src && cd src
@@ -56,12 +57,18 @@ RUN git clone https://github.com/neovim/neovim && \
     sudo make install
 ## Plugin Dependencies
 RUN sudo apt-get install -y \
-    npm \
     luarocks
+### node/npm installation
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x -o nodesource_setup.sh && \
+    sudo -E bash nodesource_setup.sh && \
+    sudo apt install -y nodejs
+    
 # Environment Settings
+## Workspace
 RUN mkdir -p /home/$USERNAME/ros2_ws/src && \
     chown $HOST_USER_ID:$HOST_USER_ID /home/$USERNAME/ros2_ws
-
+## Login Shell
+RUN echo "sudo chown -R 1000:1000 /home/$USERNAME/.config" >> /home/$USERNAME/.zshrc
 # Entrypoint settings
 WORKDIR /home/$USERNAME
 ENTRYPOINT [ "/bin/zsh" ]
