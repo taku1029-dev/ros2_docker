@@ -46,7 +46,8 @@ RUN sudo apt-get install -y \
     ninja-build \
     gettext \
     cmake \
-    curl
+    curl \
+    luarocks
 ## Nvim Build Process
 ### Neovim
 WORKDIR /tmp
@@ -55,14 +56,17 @@ RUN git clone https://github.com/neovim/neovim && \
     cd neovim && \
     make CMAKE_BUILD_TYPE=RelWithDebInfo && \
     sudo make install
-## Plugin Dependencies
-RUN sudo apt-get install -y \
-    luarocks
 ### node/npm installation
 RUN curl -fsSL https://deb.nodesource.com/setup_current.x -o nodesource_setup.sh && \
     sudo -E bash nodesource_setup.sh && \
     sudo apt install -y nodejs
-    
+## Nvim Plugin Dependencies
+### coc.nvim LSP
+RUN npm install -g \
+    bash-language-server \
+    dockerfile-language-server-nodejs \
+    @microsoft/compose-language-service
+
 # Environment Settings
 ## Workspace
 RUN mkdir -p /home/$USERNAME/ros2_ws/src && \
