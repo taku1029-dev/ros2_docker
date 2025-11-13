@@ -1,7 +1,7 @@
 services:
-  ros2_host:
+  ros2_dev:
     image: ros2_env:first
-    container_name: ros2_env
+    container_name: ros2_env_fixed
     tty: true # -t option (prevent container from stopping)
     stdin_open: true # -i option (accept stdin input)
     privileged: true
@@ -10,7 +10,8 @@ services:
     volumes:
       - /dev/shm:/dev/shm
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
+      - $SSH_AUTH_SOCK:/ssh-agent
+      - /etc/hosts:/etc/hosts
       - type: bind
         source: /home/taku1029/.config # binding .config/nvim makes .config dir root:root
         target: /home/taku_ros/.config
@@ -25,4 +26,4 @@ services:
       - "ROS_DOMAIN_ID=30"
       - "LDS_MODEL=LDS-02"
       - "TURTLEBOT3_MODEL=burger"
-      - "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}" # Share socket for ssh auth with host
+      - "SSH_AUTH_SOCK=/ssh-agent" # Share socket for ssh auth with host
